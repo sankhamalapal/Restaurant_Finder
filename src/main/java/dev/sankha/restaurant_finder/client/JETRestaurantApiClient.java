@@ -1,10 +1,12 @@
 package dev.sankha.restaurant_finder.client;
 
 import dev.sankha.restaurant_finder.model.Restaurant;
+import dev.sankha.restaurant_finder.model.RestaurantApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 
 import java.util.List;
 
@@ -25,6 +27,22 @@ public class JETRestaurantApiClient implements RestaurantClient{
 
     @Override
     public List<Restaurant> fetchRestaurants(String postcode) {
-        return List.of();
+        try{
+            RestaurantApiResponse response = restClient.get()
+                    .uri("/{postcode}",postcode.toLowerCase())
+                    .retrieve()
+                    .body(RestaurantApiResponse.class);
+
+            if(response==null || response.restaurantList()==null){
+                log.warn("Received empty response from JET API for postcode: {}", postcode);
+                return List.of();
+            }
+            log.info("Successfully fetched {} restaurants for postcode: {}", response.restaurantList().size(), postcode);
+            return response.restaurantList();
+
+        } catch (RestClientException e) {
+            log.error("Error fetching restaurants for postcode '{}': {}", postcode, e.getMessage());
+            return List.of();
+        }
     }
 }
