@@ -1,6 +1,5 @@
 package dev.sankha.restaurant_finder.controller;
 
-import dev.sankha.restaurant_finder.model.api.Restaurant;
 import dev.sankha.restaurant_finder.model.dto.RestaurantDTO;
 import dev.sankha.restaurant_finder.service.RestaurantService;
 import org.slf4j.Logger;
@@ -30,15 +29,15 @@ public class RestaurantController {
     public void displayConsole(List<RestaurantDTO> restaurants, String postcode) {
         log.info("RestaurantController - displayConsole called");
         log.info("========================================");
-        log.info(" JET Restaurant Finder | " + postcode);
+        log.info(" JET Restaurant Finder | {}", postcode);
         log.info("========================================");
 
         for (int i = 0; i < restaurants.size(); i++) {
             RestaurantDTO r = restaurants.get(i);
-            log.info("\n" + (i + 1) + ". " + r.name());
-            log.info("   Cuisines : " + String.join(", ", r.cuisines()));
-            log.info("   Rating   : " + r.rating());
-            log.info("   Address  : " + r.address());
+            log.info("\n{}. {}", i + 1, r.name());
+            log.info("   Cuisines : {}", String.join(", ", r.cuisines()));
+            log.info("   Rating   : {}", r.rating());
+            log.info("   Address  : {}", r.address());
         }
 
         log.info("\n========================================");
