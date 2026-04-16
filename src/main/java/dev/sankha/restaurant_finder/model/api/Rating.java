@@ -1,4 +1,4 @@
-package dev.sankha.restaurant_finder.model;
+package dev.sankha.restaurant_finder.model.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

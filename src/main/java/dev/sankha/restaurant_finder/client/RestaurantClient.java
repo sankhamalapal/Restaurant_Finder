@@ -1,6 +1,6 @@
 package dev.sankha.restaurant_finder.client;
 
-import dev.sankha.restaurant_finder.model.Restaurant;
+import dev.sankha.restaurant_finder.model.api.Restaurant;
 
 import java.util.List;
 

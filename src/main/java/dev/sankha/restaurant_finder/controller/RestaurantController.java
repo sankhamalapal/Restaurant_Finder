@@ -1,6 +1,7 @@
 package dev.sankha.restaurant_finder.controller;
 
-import dev.sankha.restaurant_finder.model.Restaurant;
+import dev.sankha.restaurant_finder.model.api.Restaurant;
+import dev.sankha.restaurant_finder.model.dto.RestaurantDTO;
 import dev.sankha.restaurant_finder.service.RestaurantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,27 @@ public class RestaurantController {
         this.restaurantService = restaurantService;
     }
     @GetMapping("/restaurants/{postcode}")
-    public List<Restaurant> getRestaurantsByPostcode(@PathVariable String postcode) {
+    public List<RestaurantDTO> getRestaurantsByPostcode(@PathVariable String postcode) {
         log.info("RestaurantController - Received request for restaurants in postcode: {}", postcode);
-        return restaurantService.getRestaurants(postcode);
+        List<RestaurantDTO> restaurants = restaurantService.getRestaurants(postcode);
+        displayConsole(restaurants, postcode);
+        return restaurants;
+    }
+
+    public void displayConsole(List<RestaurantDTO> restaurants, String postcode) {
+        log.info("RestaurantController - displayConsole called");
+        log.info("========================================");
+        log.info(" JET Restaurant Finder | " + postcode);
+        log.info("========================================");
+
+        for (int i = 0; i < restaurants.size(); i++) {
+            RestaurantDTO r = restaurants.get(i);
+            log.info("\n" + (i + 1) + ". " + r.name());
+            log.info("   Cuisines : " + String.join(", ", r.cuisines()));
+            log.info("   Rating   : " + r.rating());
+            log.info("   Address  : " + r.address());
+        }
+
+        log.info("\n========================================");
     }
 }

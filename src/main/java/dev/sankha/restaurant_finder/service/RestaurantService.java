@@ -1,13 +1,15 @@
 package dev.sankha.restaurant_finder.service;
 
-import dev.sankha.restaurant_finder.client.JETRestaurantApiClient;
 import dev.sankha.restaurant_finder.client.RestaurantClient;
-import dev.sankha.restaurant_finder.model.Restaurant;
+import dev.sankha.restaurant_finder.model.api.Cuisine;
+import dev.sankha.restaurant_finder.model.api.Restaurant;
+import dev.sankha.restaurant_finder.model.dto.RestaurantDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
@@ -19,8 +21,27 @@ public class RestaurantService {
         this.restaurantClient = restaurantClient;
     }
 
-    public List<Restaurant> getRestaurants(String postcode) {
+    public List<RestaurantDTO> getRestaurants(String postcode) {
         log.info("RestaurantService - Fetching restaurants for postcode: {}", postcode);
-        return restaurantClient.fetchRestaurants(postcode);
+        return restaurantClient.fetchRestaurants(postcode)
+                .stream()
+                .limit(10)
+                .map(this::toDTO)
+                .toList();
+    }
+
+    private RestaurantDTO toDTO(Restaurant restaurant) {
+        List<String> cuisines = restaurant.cuisines()
+                .stream()
+                .map(Cuisine::name)
+                .collect(Collectors.toList());
+
+        double rating = restaurant.rating().starRating();
+
+        String address = restaurant.address().firstLine() + ", "
+                + restaurant.address().city() + ", "
+                + restaurant.address().postalCode();
+
+        return new RestaurantDTO(restaurant.name(), cuisines, rating, address);
     }
 }

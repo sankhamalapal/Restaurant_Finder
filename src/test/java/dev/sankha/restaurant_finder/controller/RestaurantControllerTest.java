@@ -1,9 +1,10 @@
 package dev.sankha.restaurant_finder.controller;
 
-import dev.sankha.restaurant_finder.model.Address;
-import dev.sankha.restaurant_finder.model.Cuisine;
-import dev.sankha.restaurant_finder.model.Rating;
-import dev.sankha.restaurant_finder.model.Restaurant;
+import dev.sankha.restaurant_finder.model.api.Address;
+import dev.sankha.restaurant_finder.model.api.Cuisine;
+import dev.sankha.restaurant_finder.model.api.Rating;
+import dev.sankha.restaurant_finder.model.api.Restaurant;
+import dev.sankha.restaurant_finder.model.dto.RestaurantDTO;
 import dev.sankha.restaurant_finder.service.RestaurantService;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ class RestaurantControllerTest {
 
     @Test
     void returnsAllRestaurantsForPostcode() {
-        List<Restaurant> result = controllerWith(List.of(
+        List<RestaurantDTO> result = controllerWith(List.of(
                 restaurant("Pizza Place"),
                 restaurant("Burger Barn"),
                 restaurant("Sushi World")
@@ -42,7 +43,7 @@ class RestaurantControllerTest {
 
     @Test
     void returnsSingleRestaurantByName() {
-        List<Restaurant> result = controllerWith(List.of(
+        List<RestaurantDTO> result = controllerWith(List.of(
                 restaurant("Noodle House")
         )).getRestaurantsByPostcode("EC4M");
 
@@ -63,13 +64,13 @@ class RestaurantControllerTest {
 
     @Test
     void preservesOrderOfRestaurantsFromService() {
-        List<Restaurant> result = controllerWith(List.of(
+        List<RestaurantDTO> result = controllerWith(List.of(
                 restaurant("Alpha"),
                 restaurant("Beta"),
                 restaurant("Gamma")
         )).getRestaurantsByPostcode("EC4M");
 
-        List<String> names = result.stream().map(Restaurant::name).toList();
+        List<String> names = result.stream().map(RestaurantDTO::name).toList();
         assertEquals(List.of("Alpha", "Beta", "Gamma"), names);
     }
 }

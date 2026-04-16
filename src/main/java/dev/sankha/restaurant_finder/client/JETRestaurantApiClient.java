@@ -1,7 +1,7 @@
 package dev.sankha.restaurant_finder.client;
 
-import dev.sankha.restaurant_finder.model.Restaurant;
-import dev.sankha.restaurant_finder.model.RestaurantApiResponse;
+import dev.sankha.restaurant_finder.model.api.Restaurant;
+import dev.sankha.restaurant_finder.model.api.RestaurantApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
