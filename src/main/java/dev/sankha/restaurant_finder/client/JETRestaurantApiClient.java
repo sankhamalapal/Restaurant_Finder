@@ -29,7 +29,7 @@ public class JETRestaurantApiClient implements RestaurantClient{
     public List<Restaurant> fetchRestaurants(String postcode) {
         try{
             RestaurantApiResponse response = restClient.get()
-                    .uri("/{postcode}",postcode.strip().replace(" ", "").toLowerCase())
+                    .uri("/{postcode}",postcode.strip().replace(" ", "").toUpperCase())
                     .retrieve()
                     .body(RestaurantApiResponse.class);
 
