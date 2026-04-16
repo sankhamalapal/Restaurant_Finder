@@ -11,11 +11,15 @@ async function performSearch() {
     results.innerHTML = '';
 
     if (!postcode) {
-        error.textContent = 'Please enter an postcode.';
+        error.textContent = 'Please enter a postcode.';
         return;
     }
 
     const res = await fetch(`/restaurants/${encodeURIComponent(postcode)}`);
+    if (!res.ok) {
+        error.textContent = 'Failed to fetch restaurants. Please try again.';
+        return;
+    }
     const restaurants = await res.json();
 
     if (restaurants.length === 0) {
