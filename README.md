@@ -38,7 +38,7 @@ If not installed:
 
 **1. Clone the repository:**
 ```bash
-git clone https://github.com/yourusername/Restaurant_Finder.git
+git clone https://github.com/sankhamalapal/Restaurant_Finder.git
 ```
 ```bash
 cd Restaurant_Finder
