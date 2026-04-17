@@ -31,16 +31,21 @@ public class RestaurantService {
     }
 
     private RestaurantDTO toDTO(Restaurant restaurant) {
-        List<String> cuisines = restaurant.cuisines()
-                .stream()
-                .map(Cuisine::name)
-                .collect(Collectors.toList());
 
-        double rating = restaurant.rating().starRating();
+        List<String> cuisines = restaurant.cuisines() != null ?
+                restaurant.cuisines().stream()
+                        .map(Cuisine::name)
+                        .collect(Collectors.toList()) :
+                List.of();
 
-        String address = restaurant.address().firstLine() + ", "
-                + restaurant.address().city() + ", "
-                + restaurant.address().postalCode();
+        double rating = (restaurant.rating() != null && restaurant.rating().starRating() != null) ?
+                restaurant.rating().starRating() : 0.0;
+
+        String address = restaurant.address() != null ?
+                restaurant.address().firstLine().strip().replace("\n", " ") + ", "
+                        + restaurant.address().city().strip() + ", "
+                        + restaurant.address().postalCode().strip() :
+                "";
 
         return new RestaurantDTO(restaurant.name(), cuisines, rating, address);
     }

@@ -14,33 +14,38 @@ async function performSearch() {
         error.textContent = 'Please enter a postcode.';
         return;
     }
+    results.textContent = 'Loading...';
+    try {
+        const res = await fetch(`/restaurants/${encodeURIComponent(postcode)}`);
+        if (!res.ok) {
+            error.textContent = 'Failed to fetch restaurants. Please try again.';
+            return;
+        }
+        const restaurants = await res.json();
 
-    const res = await fetch(`/restaurants/${encodeURIComponent(postcode)}`);
-    if (!res.ok) {
-        error.textContent = 'Failed to fetch restaurants. Please try again.';
-        return;
-    }
-    const restaurants = await res.json();
+        if (restaurants.length === 0) {
+            results.textContent = 'No restaurants found.';
+            return;
+        }
 
-    if (restaurants.length === 0) {
-        results.textContent = 'No restaurants found.';
-        return;
-    }
+        let html = `<p>First ${restaurants.length} restaurants found in ${postcode.toUpperCase()} are displayed</p>`;
+        html += '<table><thead><tr><th>No.</th><th>Name</th><th>Rating</th><th>Cuisines</th><th>Address</th></tr></thead><tbody>';
 
-    let html = `<p>First ${restaurants.length} restaurants found in ${postcode.toUpperCase()} are displayed</p>`;
-    html += '<table><thead><tr><th>No.</th><th>Name</th><th>Rating</th><th>Cuisines</th><th>Address</th></tr></thead><tbody>';
-
-    for (let i = 0; i < restaurants.length; i++) {
-        const r = restaurants[i];
-        const cuisines = r.cuisines.join(', ');
-        html += `<tr>
+        for (let i = 0; i < restaurants.length; i++) {
+            const r = restaurants[i];
+            const cuisines = r.cuisines.join(', ');
+            html += `<tr>
             <td>${i + 1}</td>
             <td>${r.name}</td>
             <td>${r.rating}</td>
             <td>${cuisines}</td>
             <td>${r.address}</td>
         </tr>`;
+        }
+        html += '</tbody></table>';
+        results.innerHTML = html;
+    } catch (e) {
+        error.textContent = 'Network error. Please check your connection.';
+        results.textContent = '';
     }
-    html += '</tbody></table>';
-    results.innerHTML = html;
 }
