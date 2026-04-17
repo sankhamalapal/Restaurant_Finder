@@ -212,7 +212,8 @@ src/
 
 The application follows a layered architecture with clear separation of concerns:
 
-![Architecture](architecture.png)
+<img src="architecture.png" alt="Architecture" width="300"/>
+
 
 **Key design decisions:**
 
