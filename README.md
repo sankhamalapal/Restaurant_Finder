@@ -153,7 +153,7 @@ Example response:
             "Deals"
         ],
         "rating": 5.0,
-        "address": "195 Shoreditch High Street,\nHackney, London, E1 6LG"
+        "address": "195 Shoreditch High Street, Hackney, London, E1 6LG"
     },
     {
         "name": "Nonna Bakery",

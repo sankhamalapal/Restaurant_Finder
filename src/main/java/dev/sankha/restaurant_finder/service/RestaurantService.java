@@ -17,7 +17,6 @@ public class RestaurantService {
     private final RestaurantClient restaurantClient;
 
     public RestaurantService(RestaurantClient restaurantClient) {
-        log.info("Initializing RestaurantService with RestaurantClient: {}", restaurantClient.getClass().getSimpleName());
         this.restaurantClient = restaurantClient;
     }
 

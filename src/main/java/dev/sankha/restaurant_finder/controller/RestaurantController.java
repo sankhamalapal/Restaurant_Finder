@@ -15,7 +15,6 @@ public class RestaurantController {
     private static final Logger log = LoggerFactory.getLogger(RestaurantController.class);
     private final RestaurantService restaurantService;
     public RestaurantController(RestaurantService restaurantService){
-        log.info("Initializing RestaurantController with RestaurantService: {}", restaurantService.getClass().getSimpleName());
         this.restaurantService = restaurantService;
     }
     @GetMapping("/restaurants/{postcode}")

@@ -18,7 +18,6 @@ public class JETRestaurantApiClient implements RestaurantClient{
     private final RestClient restClient;
 
     public JETRestaurantApiClient(){
-        log.info("Initializing RestClient for JET API with base URL: {}", BASE_URL);
         this.restClient = RestClient.builder()
                 .baseUrl(BASE_URL)
                 .defaultHeader("Accept", "application/json")

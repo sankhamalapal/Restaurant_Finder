@@ -19,6 +19,7 @@ async function performSearch() {
         const res = await fetch(`/restaurants/${encodeURIComponent(postcode)}`);
         if (!res.ok) {
             error.textContent = 'Failed to fetch restaurants. Please try again.';
+            results.textContent = '';
             return;
         }
         const restaurants = await res.json();
