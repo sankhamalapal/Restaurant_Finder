@@ -1,6 +1,6 @@
 # Restaurant Finder
 
-A Spring Boot web application that fetches restaurant data from the Just Eat Takeaway (JET) API by UK postcode and displays the first 10 results in a clean web interface.
+A Spring Boot Maven web application that fetches restaurant data from the Just Eat Takeaway (JET) API by UK postcode and displays the first 10 results in a clean web interface.
 
 Built as part of the Just Eat Takeaway Early Careers Software Engineering Program 2026.
 
@@ -8,7 +8,7 @@ Built as part of the Just Eat Takeaway Early Careers Software Engineering Progra
 
 ## User Story
 
-**As a user**, I want to enter a UK postcode and see a list of the first 10 restaurants available in that area, so that I can quickly find places to order from.
+**As a user**, I want to enter a UK postcode and see a list of the first 10 restaurants available in that area.
 
 **Acceptance criteria:**
 - Given a valid UK postcode, the application displays up to 10 restaurants
@@ -73,7 +73,7 @@ http://localhost:8080
 
 **5. Stop the server:**
 ```
-Ctrl + C
+Ctrl + C (on Windows, confirm with Y when prompted)
 ```
 
 ---
@@ -115,6 +115,9 @@ Example postcodes to try: `EC4M 7RF`, `CT1 2EH`, `SW1A 1AA`, `BS1 4DJ`, `M16 0RA
 ```
 No restaurants found.
 ```
+**If fewer than 10 restaurants are found :**
+
+All results are shown.
 
 **If the API call fails:**
 ```
@@ -227,7 +230,7 @@ No Mockito or additional test framework mocking is needed.
 
 **2. Model split into `api/` and `dto/`**
 
-The raw API response contains many fields that are not needed (e.g. `logoUrl`, `driveDistance`, `isOpenNow`). Two separate model packages are used:
+The raw API response contains many fields that are not needed (e.g. `logoUrl`, `driveDistanceMeters`, `isOpenNowForDelivery`). Two separate model packages are used:
 - `model/api/` — mirrors the JET API JSON structure, uses `@JsonIgnoreProperties(ignoreUnknown = true)` to safely ignore unmapped fields
 - `model/dto/` — a clean, flat `RestaurantDTO` with only the four required fields: name, cuisines, rating, address
 
@@ -255,19 +258,19 @@ Static files (`index.html`, `app.js`, `style.css`) are placed in `src/main/resou
 
 - The JET API returns restaurants already filtered by postcode — no additional filtering is needed in this application.
 - "First 10 restaurants" means the first 10 in the order returned by the API. The API's ordering is trusted.
-- Rating is displayed as a decimal number using the `starRating` field from the API response. The review count is not displayed as the brief asked for rating as a number only.
+- Rating is displayed as a decimal number using the `starRating` field from the API response. The review count is not displayed as the problem asked for rating as a number only.
 - Address is formatted as `firstLine, city, postalCode` — this was the clearest human-readable format from the available address fields.
 - Postcodes with or without spaces are both valid inputs — the application handles normalisation before the API call.
 - The application assumes a valid UK postcode is entered. No format validation is applied as the requirement did not specify this. If an invalid postcode is entered, the JET API returns an empty response and the application displays "No restaurants found."
-- If the API returns fewer than 10 restaurants for a valid postcode, all results are shown.
 
 ---
 
 ## Improvements
 
+- **Rating-based sorting** — allow users to sort the restaurant list by rating (highest to lowest) using the `starRating` field from the API response.
 - **Rating count** — display the number of ratings alongside the star rating (e.g. `4.5 (314 ratings)`). The `count` field is available in the API response but was excluded as the requirement specified rating as a number only.
 - **Pagination** — allow the user to request results beyond the first 10 by passing a page or offset parameter.
 - **Slice and Integration tests** — add slice tests for the controller to verify HTTP status codes and endpoint mapping, and an end-to-end integration test that calls the real JET API to verify the full stack works together.
 - **Location-based sorting** — sort restaurants by proximity to the user's current location using the coordinates returned in `address.location.coordinates`. This would require geolocation integration and distance calculation logic.
-
+- **Resilience** — add retry logic with exponential backoff using Spring Retry to handle transient JET API failures, and configure connection and read timeouts to prevent indefinite hanging.
 ---

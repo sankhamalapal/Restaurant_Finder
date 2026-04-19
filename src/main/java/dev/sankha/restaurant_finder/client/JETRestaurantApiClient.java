@@ -14,7 +14,7 @@ import java.util.List;
 public class JETRestaurantApiClient implements RestaurantClient{
 
     private static final Logger log = LoggerFactory.getLogger(JETRestaurantApiClient.class);
-    private final String BASE_URL = "https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode/";
+    private static final String BASE_URL = "https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode/";
     private final RestClient restClient;
 
     public JETRestaurantApiClient(){
@@ -32,7 +32,7 @@ public class JETRestaurantApiClient implements RestaurantClient{
                     .retrieve()
                     .body(RestaurantApiResponse.class);
 
-            if(response==null || response.restaurantList()==null){
+            if(response == null || response.restaurantList() == null){
                 log.warn("Received empty response from JET API for postcode: {}", postcode);
                 return List.of();
             }

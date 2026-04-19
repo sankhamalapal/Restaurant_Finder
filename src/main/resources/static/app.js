@@ -28,8 +28,9 @@ async function performSearch() {
             results.textContent = 'No restaurants found.';
             return;
         }
-
-        let html = `<p>First ${restaurants.length} restaurants found in ${postcode.toUpperCase()} are displayed</p>`;
+        let html = restaurants.length < 10
+            ? `<p>All ${restaurants.length} restaurants found in ${postcode.toUpperCase()} are displayed</p>`
+            : `<p>First 10 restaurants found in ${postcode.toUpperCase()} are displayed</p>`;
         html += '<table><thead><tr><th>No.</th><th>Name</th><th>Rating</th><th>Cuisines</th><th>Address</th></tr></thead><tbody>';
 
         for (let i = 0; i < restaurants.length; i++) {

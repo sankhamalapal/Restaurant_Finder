@@ -12,8 +12,10 @@ import java.util.List;
 
 @RestController
 public class RestaurantController {
+
     private static final Logger log = LoggerFactory.getLogger(RestaurantController.class);
     private final RestaurantService restaurantService;
+
     public RestaurantController(RestaurantService restaurantService){
         this.restaurantService = restaurantService;
     }
@@ -25,20 +27,19 @@ public class RestaurantController {
         return restaurants;
     }
 
-    public void displayConsole(List<RestaurantDTO> restaurants, String postcode) {
-        log.info("RestaurantController - displayConsole called");
-        log.info("========================================");
-        log.info(" JET Restaurant Finder | {}", postcode);
-        log.info("========================================");
+    private void displayConsole(List<RestaurantDTO> restaurants, String postcode) {
+        System.out.println("========================================");
+        System.out.println(" JET Restaurant Finder | "+ postcode);
+        System.out.println("========================================");
 
         for (int i = 0; i < restaurants.size(); i++) {
             RestaurantDTO r = restaurants.get(i);
-            log.info("\n{}. {}", i + 1, r.name());
-            log.info("   Cuisines : {}", String.join(", ", r.cuisines()));
-            log.info("   Rating   : {}", r.rating());
-            log.info("   Address  : {}", r.address());
+            System.out.println("\n"+ (i + 1)+". "+ r.name());
+            System.out.println("   Cuisines : "+ String.join(", ", r.cuisines()));
+            System.out.println("   Rating   : "+ r.rating());
+            System.out.println("   Address  : "+ r.address());
         }
 
-        log.info("\n========================================");
+        System.out.println("\n========================================");
     }
 }
