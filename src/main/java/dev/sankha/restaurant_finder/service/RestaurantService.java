@@ -4,6 +4,7 @@ import dev.sankha.restaurant_finder.client.RestaurantClient;
 import dev.sankha.restaurant_finder.model.api.Cuisine;
 import dev.sankha.restaurant_finder.model.api.Restaurant;
 import dev.sankha.restaurant_finder.model.dto.RestaurantDTO;
+import dev.sankha.restaurant_finder.model.dto.RestaurantResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,14 @@ public class RestaurantService {
         this.restaurantClient = restaurantClient;
     }
 
-    public List<RestaurantDTO> getRestaurants(String postcode) {
+    public RestaurantResponse getRestaurants(String postcode) {
         log.info("RestaurantService - Fetching restaurants for postcode: {}", postcode);
-        return restaurantClient.fetchRestaurants(postcode)
-                .stream()
+        List<Restaurant> all = restaurantClient.fetchRestaurants(postcode);
+        List<RestaurantDTO> limited = all.stream()
                 .limit(10)
                 .map(this::toDTO)
                 .toList();
+        return new RestaurantResponse(limited, all.size());
     }
 
     private RestaurantDTO toDTO(Restaurant restaurant) {

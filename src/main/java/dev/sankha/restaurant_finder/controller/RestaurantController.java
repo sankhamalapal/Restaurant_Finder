@@ -1,6 +1,7 @@
 package dev.sankha.restaurant_finder.controller;
 
 import dev.sankha.restaurant_finder.model.dto.RestaurantDTO;
+import dev.sankha.restaurant_finder.model.dto.RestaurantResponse;
 import dev.sankha.restaurant_finder.service.RestaurantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +21,11 @@ public class RestaurantController {
         this.restaurantService = restaurantService;
     }
     @GetMapping("/restaurants/{postcode}")
-    public List<RestaurantDTO> getRestaurantsByPostcode(@PathVariable String postcode) {
+    public RestaurantResponse getRestaurantsByPostcode(@PathVariable String postcode) {
         log.info("RestaurantController - Received request for restaurants in postcode: {}", postcode);
-        List<RestaurantDTO> restaurants = restaurantService.getRestaurants(postcode);
-        displayConsole(restaurants, postcode);
-        return restaurants;
+        RestaurantResponse response = restaurantService.getRestaurants(postcode);
+        displayConsole(response.restaurants(), postcode);
+        return response;
     }
 
     private void displayConsole(List<RestaurantDTO> restaurants, String postcode) {

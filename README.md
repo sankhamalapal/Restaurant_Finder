@@ -13,7 +13,7 @@ Built as part of the Just Eat Takeaway Early Careers Software Engineering Progra
 **Acceptance criteria:**
 - Given a valid UK postcode, the application displays up to 10 restaurants
 - Each restaurant shows its name, cuisines, rating (as a number), and address
-- Given a postcode with no restaurants, the application shows a clear "no results" message
+- Given a postcode with no restaurants, the application shows a clear "No restaurants found." message
 - Given an invalid or failed request, the application shows a meaningful error message
 - Postcodes entered with or without spaces are both handled correctly
 
@@ -115,7 +115,7 @@ Example postcodes to try: `EC4M 7RF`, `CT1 2EH`, `SW1A 1AA`, `BS1 4DJ`, `M16 0RA
 ```
 No restaurants found.
 ```
-**If fewer than 10 restaurants are found :**
+**If fewer than or equal to 10 restaurants are found :**
 
 All results are shown.
 
@@ -143,34 +143,34 @@ Example:
 curl http://localhost:8080/restaurants/EC4M7RF
 ```
 
-Example response:
+Example response (showing 2 of 10 restaurant results):
 ```json
-[
+{
+  "restaurants": [
     {
-        "name": "Bagelbuzz",
-        "cuisines": [
-            "Bagels",
-            "Lunch",
-            "Collect stamps",
-            "Sandwiches",
-            "Deals"
-        ],
-        "rating": 5.0,
-        "address": "195 Shoreditch High Street, Hackney, London, E1 6LG"
+      "name": "Curry Queen",
+      "cuisines": [
+        "Indian",
+        "Curry",
+        "Halal",
+        "Deals"
+      ],
+      "rating": 5.0,
+      "address": "1 Shenfield Street, London, N1 6SE"
     },
     {
-        "name": "Nonna Bakery",
-        "cuisines": [
-            "Italian",
-            "Bakery",
-            "Breakfast",
-            "Sandwiches",
-            "Deals"
-        ],
-        "rating": 4.5,
-        "address": "75 High Holborn, London, WC1V 6LS"
+      "name": "Mr Chan's",
+      "cuisines": [
+        "Chinese",
+        "Asian",
+        "Deals"
+      ],
+      "rating": 5.0,
+      "address": "21 Clerkenwell Road, London, EC1M 5RD"
     }
-]
+    ],
+  "total": 2341
+}
 ```
 
 ---
@@ -194,8 +194,9 @@ src/
 │   │   │   │   ├── Rating.java
 │   │   │   │   ├── Cuisine.java
 │   │   │   │   └── Address.java
-│   │   │   └── dto/                           → Clean output model
-│   │   │       └── RestaurantDTO.java
+│   │   │   └── dto/                           → Clean output models
+│   │   │       ├── RestaurantDTO.java
+│   │   │       └── RestaurantResponse.java
 │   │   └── service/
 │   │       └── RestaurantService.java         → Maps raw data to DTO, limits to 10
 │   └── resources/
@@ -232,7 +233,7 @@ No Mockito or additional test framework mocking is needed.
 
 The raw API response contains many fields that are not needed (e.g. `logoUrl`, `driveDistanceMeters`, `isOpenNowForDelivery`). Two separate model packages are used:
 - `model/api/` — mirrors the JET API JSON structure, uses `@JsonIgnoreProperties(ignoreUnknown = true)` to safely ignore unmapped fields
-- `model/dto/` — a clean, flat `RestaurantDTO` with only the four required fields: name, cuisines, rating, address
+- `model/dto/` — contains `RestaurantDTO` — a clean, flat record with the four required fields: name, cuisines, rating, address and `RestaurantResponse` — wraps the limited list of `RestaurantDTO` and the total count of restaurants available, enabling the frontend to display an accurate message.
 
 This means the controller and web UI never see raw API objects — they only ever receive clean, pre-formatted data.
 

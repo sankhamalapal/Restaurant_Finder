@@ -22,15 +22,17 @@ async function performSearch() {
             results.textContent = '';
             return;
         }
-        const restaurants = await res.json();
+        const { restaurants, total } = await res.json();
 
         if (restaurants.length === 0) {
             results.textContent = 'No restaurants found.';
             return;
         }
-        let html = restaurants.length < 10
-            ? `<p>All ${restaurants.length} restaurants found in ${postcode.toUpperCase()} are displayed</p>`
-            : `<p>First 10 restaurants found in ${postcode.toUpperCase()} are displayed</p>`;
+        const label = total === 1 ? 'restaurant' : 'restaurants';
+
+        let html = restaurants.length < total
+            ? `<p>First ${restaurants.length} of ${total} restaurants found in ${postcode.toUpperCase()} are displayed</p>`
+            : `<p>All ${total} ${label} found in ${postcode.toUpperCase()} are displayed</p>`;
         html += '<table><thead><tr><th>No.</th><th>Name</th><th>Rating</th><th>Cuisines</th><th>Address</th></tr></thead><tbody>';
 
         for (let i = 0; i < restaurants.length; i++) {

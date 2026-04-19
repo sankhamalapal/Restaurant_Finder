@@ -6,6 +6,7 @@ import dev.sankha.restaurant_finder.model.api.Cuisine;
 import dev.sankha.restaurant_finder.model.api.Rating;
 import dev.sankha.restaurant_finder.model.api.Restaurant;
 import dev.sankha.restaurant_finder.model.dto.RestaurantDTO;
+import dev.sankha.restaurant_finder.model.dto.RestaurantResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -31,41 +32,41 @@ class RestaurantServiceTest {
     // Verifies the service returns all restaurants the client provides
     @Test
     void returnsAllRestaurantsFromClient() {
-        List<RestaurantDTO> result = serviceWith(List.of(
+        RestaurantResponse response = serviceWith(List.of(
                 restaurant("Pizza Place"),
                 restaurant("Burger Shop"),
                 restaurant("Sushi World")
         )).getRestaurants("EC4M 7RF");
 
-        assertEquals(3, result.size());
+        assertEquals(3, response.restaurants().size());
     }
 
     // Verifies the service handles an empty response without errors
     @Test
     void returnsEmptyWhenClientReturnsEmpty() {
-        assertTrue(serviceWith(List.of()).getRestaurants("CT1 2EH").isEmpty());
+        assertTrue(serviceWith(List.of()).getRestaurants("CT1 2EH").restaurants().isEmpty());
     }
 
     // Verifies the restaurant name is correctly mapped to the DTO
     @Test
     void returnsSingleRestaurantByName() {
-        List<RestaurantDTO> result = serviceWith(List.of(
+        RestaurantResponse response = serviceWith(List.of(
                 restaurant("Noodle House")
         )).getRestaurants("EC4M 7RF");
 
-        assertEquals("Noodle House", result.get(0).name());
+        assertEquals("Noodle House", response.restaurants().get(0).name());
     }
 
     // Verifies the service does not reorder restaurants returned by the client
     @Test
     void preservesOrderOfRestaurantsFromClient() {
-        List<RestaurantDTO> result = serviceWith(List.of(
+        RestaurantResponse response = serviceWith(List.of(
                 restaurant("Alpha"),
                 restaurant("Beta"),
                 restaurant("Gamma")
         )).getRestaurants("EC4M 7RF");
 
-        List<String> names = result.stream().map(RestaurantDTO::name).toList();
+        List<String> names = response.restaurants().stream().map(RestaurantDTO::name).toList();
         assertEquals(List.of("Alpha", "Beta", "Gamma"), names);
     }
 
@@ -76,7 +77,7 @@ class RestaurantServiceTest {
                 List.of(new Cuisine("Italian"), new Cuisine("Pizza")),
                 new Address("London", "1 High Street", "EC4M 7RF"));
 
-        RestaurantDTO dto = serviceWith(List.of(r)).getRestaurants("EC4M").get(0);
+        RestaurantDTO dto = serviceWith(List.of(r)).getRestaurants("EC4M").restaurants().get(0);
 
         assertEquals(List.of("Italian", "Pizza"), dto.cuisines());
     }
@@ -88,7 +89,7 @@ class RestaurantServiceTest {
                 List.of(new Cuisine("Japanese")),
                 new Address("London", "2 Low Street", "EC4M 7RF"));
 
-        RestaurantDTO dto = serviceWith(List.of(r)).getRestaurants("EC4M 7RF").get(0);
+        RestaurantDTO dto = serviceWith(List.of(r)).getRestaurants("EC4M 7RF").restaurants().get(0);
 
         assertEquals(4.7, dto.rating());
     }
@@ -100,7 +101,7 @@ class RestaurantServiceTest {
                 List.of(new Cuisine("Japanese")),
                 new Address("Canterbury", "53 St Peter St", "CT1 2BE"));
 
-        RestaurantDTO dto = serviceWith(List.of(r)).getRestaurants("CT1 2BE").get(0);
+        RestaurantDTO dto = serviceWith(List.of(r)).getRestaurants("CT1 2BE").restaurants().get(0);
 
         assertEquals("53 St Peter St, Canterbury, CT1 2BE", dto.address());
     }
@@ -112,34 +113,35 @@ class RestaurantServiceTest {
                 List.of(),
                 new Address("London", "10 Bread St", "EC4M 7RF"));
 
-        RestaurantDTO dto = serviceWith(List.of(r)).getRestaurants("EC4M 7RF").get(0);
+        RestaurantDTO dto = serviceWith(List.of(r)).getRestaurants("EC4M 7RF").restaurants().get(0);
 
         assertTrue(dto.cuisines().isEmpty());
     }
 
-    // Verifies only the first 10 restaurants are returned when the client provides 11
+    // Verifies only the first 10 restaurants are returned when the client provides 11,
+    // and total reflects the full count before limiting
     @Test
     void returnsOnlyFirstTenWhenClientProvidesEleven() {
         List<Restaurant> eleven = IntStream.rangeClosed(1, 11)
                 .mapToObj(i -> restaurant("Restaurant " + i))
                 .toList();
 
-        List<RestaurantDTO> result = serviceWith(eleven).getRestaurants("EC4M 7RF");
-
-        assertEquals(10, result.size());
+        RestaurantResponse response = serviceWith(eleven).getRestaurants("EC4M 7RF");
+        assertEquals(11, response.total());
+        assertEquals(10, response.restaurants().size());
     }
 
-    // Verifies all restaurants are returned when the client provides fewer than 10
+    // Verifies all restaurants are returned when the client provides fewer than or equal to 10,
+    // and total matches the actual count
     @Test
     void returnsAllWhenLessThanTen() {
         List<Restaurant> seven = IntStream.rangeClosed(1, 7)
                 .mapToObj(i -> restaurant("Restaurant " + i))
                 .toList();
 
-        List<RestaurantDTO> result = serviceWith(seven).getRestaurants("EC4M 7RF");
-
-        assertEquals(7, result.size());
+        RestaurantResponse response = serviceWith(seven).getRestaurants("EC4M 7RF");
+        assertEquals(7, response.total());
+        assertEquals(7, response.restaurants().size());
     }
-
 
 }
