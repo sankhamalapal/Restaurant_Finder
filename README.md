@@ -71,7 +71,7 @@ Expected output:
 http://localhost:8080
 ```
 
-**5. Stop the server:**
+**5. Stop the application:**
 ```
 Ctrl + C (on Windows, confirm with Y when prompted)
 ```
@@ -168,7 +168,7 @@ Example response (showing 2 of 10 restaurant results):
       "rating": 5.0,
       "address": "21 Clerkenwell Road, London, EC1M 5RD"
     }
-    ],
+  ],
   "total": 2341
 }
 ```
